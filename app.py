@@ -101,29 +101,31 @@ def generate_pdf(text):
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
     
-    # Use standard fonts that are guaranteed to be there
-    pdf.set_font("Arial", size=12)
+    # Use standard fonts (Arial/Helvetica)
+    pdf.set_font("Helvetica", size=12)
     
-    # Simple header
-    pdf.set_font("Arial", 'B', 16)
-    pdf.cell(200, 10, txt="Lecture Notes", ln=True, align='C')
+    # Simple header - Use 0 for full width to avoid margin issues
+    pdf.set_font("Helvetica", 'B', 16)
+    pdf.cell(0, 10, txt="Lecture Notes", ln=True, align='C')
     pdf.ln(10)
     
-    pdf.set_font("Arial", size=11)
+    pdf.set_font("Helvetica", size=11)
     
-    # Clean up markdown for simple text PDF (removing # and *)
-    # In a real app we'd use a markdown-to-pdf converter, but for reliability 
-    # and "geek-to-geek" notes, simple text works great.
+    # Clean up markdown for simple text PDF
+    # Encode/Decode to handle potential UTF-8 characters that FPDF standard fonts might skip
+    def sanitize_text(t):
+        return t.encode('latin-1', 'replace').decode('latin-1')
+
     lines = text.split('\n')
     for line in lines:
-        # Handle bold **text** -> just stripping them for the PDF version 
-        # to ensure it doesn't crash on encoding/fonts
+        # Handle bold **text** and other markdown basics for a cleaner look
         clean_line = line.replace('**', '').replace('__', '').replace('#', '').strip()
         if clean_line:
-            # Multi_cell handles word wrapping
-            pdf.multi_cell(0, 8, txt=clean_line)
+            # Multi_cell handles word wrapping automatically
+            # Using 0 for width to use the full printable width
+            pdf.multi_cell(0, 7, txt=sanitize_text(clean_line))
         else:
-            pdf.ln(5)
+            pdf.ln(4)
             
     return pdf.output(dest='S')
 
@@ -291,27 +293,35 @@ if st.button("🚀 Refactor to Geek Notes"):
                         
                         with st.expander("View Refactored Notes", expanded=True):
                             st.markdown(cleaned_notes)
-                            
+                        
+                        st.divider()
+                        st.subheader("📥 Export Options")
+                        
                         col1, col2 = st.columns(2)
                         with col1:
                             st.download_button(
-                                label="📥 Download Notes as Markdown",
+                                label="📥 Download as Markdown",
                                 data=cleaned_notes,
                                 file_name="refactored_notes.md",
-                                mime="text/markdown"
+                                mime="text/markdown",
+                                key="download_md",
+                                help="Download your notes as a standard Markdown file."
                             )
                         with col2:
-                            with st.spinner("Generating PDF..."):
+                            with st.spinner("Preparing PDF..."):
                                 pdf_bytes = generate_pdf(cleaned_notes)
                             if pdf_bytes:
                                 st.download_button(
-                                    label="📄 Download Notes as PDF",
+                                    label="📄 Download as PDF",
                                     data=pdf_bytes,
                                     file_name="refactored_notes.pdf",
-                                    mime="application/pdf"
+                                    mime="application/pdf",
+                                    key="download_pdf",
+                                    help="Download your notes as an elegant PDF document."
                                 )
                             else:
                                 st.error("Failed to generate PDF.")
+
                         
                 except Exception as e:
                     st.error(f"Generation error: {e}")
@@ -327,4 +337,3 @@ if st.button("🚀 Refactor to Geek Notes"):
                             os.remove(tmp_path)
                         except:
                             pass
-
