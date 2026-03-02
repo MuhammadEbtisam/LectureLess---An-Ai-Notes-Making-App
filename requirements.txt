@@ -1,0 +1,7 @@
+streamlit
+google-generativeai
+youtube-transcript-api
+PyPDF2
+python-docx
+markdown
+xhtml2pdf
