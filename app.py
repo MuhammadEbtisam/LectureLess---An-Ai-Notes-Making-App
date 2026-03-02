@@ -48,13 +48,28 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # API configuration
-# Try to get API key from streamlit secrets (for cloud deployment)
-# Fallback to hardcoded key if not found
-try:
-    API_KEY = st.secrets.get("GEMINI_API_KEY", "AIzaSyC5qQodjGAhYVqo26inXaJBlKcKUHiaorM")
-except:
-    API_KEY = "AIzaSyC5qQodjGAhYVqo26inXaJBlKcKUHiaorM"
-genai.configure(api_key=API_KEY)
+with st.sidebar:
+    st.header("🔑 API Settings")
+    user_api_key = st.text_input(
+        "Enter your Gemini API Key:",
+        type="password",
+        help="Get your API key from [Google AI Studio](https://aistudio.google.com/app/apikey)",
+        placeholder="AIza..."
+    )
+    
+    # Store in session state for persistence during the session
+    if user_api_key:
+        st.session_state.api_key = user_api_key
+    
+    st.divider()
+    st.info("Your API key is only used for this session and is not stored permanently.")
+
+# Initialize the API with the provided key (if any)
+if "api_key" in st.session_state and st.session_state.api_key:
+    genai.configure(api_key=st.session_state.api_key)
+else:
+    # We still need to call configure, but we'll handle the missing key during generation
+    pass
 
 # Load System Prompt
 @st.cache_data
@@ -241,6 +256,9 @@ if st.button("🚀 Refactor to Geek Notes"):
             
         if not prompt and not gemini_file:
             st.warning("⚠️ Please provide the required input before generating.")
+        elif "api_key" not in st.session_state or not st.session_state.api_key:
+            st.error("🔑 Gemini API Key not found! Please enter your API key in the sidebar to proceed.")
+            st.stop()
         else:
             with st.spinner(f"Refactoring with {model_name}... 🧠"):
                 try:
