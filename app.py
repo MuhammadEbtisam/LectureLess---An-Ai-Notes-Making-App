@@ -7,8 +7,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import PyPDF2
 import docx
 import re
-import markdown
-from xhtml2pdf import pisa
+from fpdf import FPDF
 from io import BytesIO
 
 # Configure Page
@@ -51,7 +50,10 @@ st.markdown("""
 # API configuration
 # Try to get API key from streamlit secrets (for cloud deployment)
 # Fallback to hardcoded key if not found
-API_KEY = st.secrets.get("GEMINI_API_KEY", "AIzaSyC5qQodjGAhYVqo26inXaJBlKcKUHiaorM")
+try:
+    API_KEY = st.secrets.get("GEMINI_API_KEY", "AIzaSyC5qQodjGAhYVqo26inXaJBlKcKUHiaorM")
+except:
+    API_KEY = "AIzaSyC5qQodjGAhYVqo26inXaJBlKcKUHiaorM"
 genai.configure(api_key=API_KEY)
 
 # Load System Prompt
@@ -59,7 +61,7 @@ genai.configure(api_key=API_KEY)
 def load_system_prompt():
     # Try local path first, then relative path (for cloud deployment)
     prompt_paths = [
-        r"3.md",
+        r"d:\CODING\NOTES GENERATOR\SYSTEM PROMPTS\3.md",
         "3.md",
         "../3.md"
     ]
@@ -79,37 +81,36 @@ def clean_markdown(text):
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
 
-def generate_pdf(md_text):
-    html_content = markdown.markdown(md_text, extensions=['fenced_code', 'tables', 'sane_lists'])
+def generate_pdf(text):
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
     
-    html = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="utf-8">
-    <style>
-        @page {{ size: a4; margin: 2cm; }}
-        body {{ font-family: sans-serif; line-height: 1.5; font-size: 12px; }}
-        h1, h2, h3 {{ color: #333; }}
-        pre {{ background-color: #f4f4f4; padding: 10px; border-radius: 5px; }}
-        code {{ background-color: #f4f4f4; padding: 2px 5px; border-radius: 3px; font-family: monospace; font-size: 10px; }}
-        blockquote {{ border-left: 4px solid #ccc; margin: 0; padding-left: 10px; color: #666; }}
-        table {{ border-collapse: collapse; width: 100%; }}
-        th, td {{ border: 1px solid #ddd; padding: 8px; }}
-        th {{ background-color: #f2f2f2; text-align: left; }}
-    </style>
-    </head>
-    <body>
-    {html_content}
-    </body>
-    </html>
-    """
+    # Use standard fonts that are guaranteed to be there
+    pdf.set_font("Arial", size=12)
     
-    pdf_buffer = BytesIO()
-    pisa_status = pisa.CreatePDF(html, dest=pdf_buffer)
-    if pisa_status.err:
-        return None
-    return pdf_buffer.getvalue()
+    # Simple header
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(200, 10, txt="Lecture Notes", ln=True, align='C')
+    pdf.ln(10)
+    
+    pdf.set_font("Arial", size=11)
+    
+    # Clean up markdown for simple text PDF (removing # and *)
+    # In a real app we'd use a markdown-to-pdf converter, but for reliability 
+    # and "geek-to-geek" notes, simple text works great.
+    lines = text.split('\n')
+    for line in lines:
+        # Handle bold **text** -> just stripping them for the PDF version 
+        # to ensure it doesn't crash on encoding/fonts
+        clean_line = line.replace('**', '').replace('__', '').replace('#', '').strip()
+        if clean_line:
+            # Multi_cell handles word wrapping
+            pdf.multi_cell(0, 8, txt=clean_line)
+        else:
+            pdf.ln(5)
+            
+    return pdf.output(dest='S')
 
 def extract_yt_transcript(url):
     try:
@@ -308,4 +309,3 @@ if st.button("🚀 Refactor to Geek Notes"):
                             os.remove(tmp_path)
                         except:
                             pass
-
