@@ -59,7 +59,7 @@ genai.configure(api_key=API_KEY)
 def load_system_prompt():
     # Try local path first, then relative path (for cloud deployment)
     prompt_paths = [
-        r"d:\CODING\NOTES GENERATOR\SYSTEM PROMPTS\3.md",
+        r"3.md",
         "3.md",
         "../3.md"
     ]
@@ -308,3 +308,4 @@ if st.button("🚀 Refactor to Geek Notes"):
                             os.remove(tmp_path)
                         except:
                             pass
+
