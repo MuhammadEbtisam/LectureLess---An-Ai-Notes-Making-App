@@ -9,6 +9,7 @@ import docx
 import re
 from fpdf import FPDF
 from io import BytesIO
+import textwrap
 
 # Configure Page
 st.set_page_config(page_title="The Lecture Refactorer", page_icon="📚", layout="wide")
@@ -121,9 +122,11 @@ def generate_pdf(text):
         # Handle bold **text** and other markdown basics for a cleaner look
         clean_line = line.replace('**', '').replace('__', '').replace('#', '').strip()
         if clean_line:
+            # textwrap breaks long strings/words that FPDF handles poorly
+            wrapped_text = textwrap.fill(sanitize_text(clean_line), width=90, break_long_words=True, replace_whitespace=False)
             # Multi_cell handles word wrapping automatically
             # Using 0 for width to use the full printable width
-            pdf.multi_cell(0, 7, txt=sanitize_text(clean_line))
+            pdf.multi_cell(0, 7, txt=wrapped_text)
         else:
             pdf.ln(4)
             
