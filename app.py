@@ -76,16 +76,16 @@ else:
 def load_system_prompt():
     # Try local path first, then relative path (for cloud deployment)
     prompt_paths = [
-        r"d:\CODING\NOTES GENERATOR\SYSTEM PROMPTS\3.md",
-        "3.md",
-        "../3.md"
+        r"system_prompt.md",
+        "system_prompt.md",
+        "../system_prompt.md"
     ]
     for path in prompt_paths:
         if os.path.exists(path):
             with open(path, "r", encoding="utf-8") as f:
                 return f.read()
     
-    st.error("System prompt file (3.md) not found in any expected location.")
+    st.error("System prompt file (system_prompt.md) not found in any expected location.")
     return "You are The Lecture Refactorer."
 
 SYSTEM_PROMPT = load_system_prompt()
@@ -327,3 +327,4 @@ if st.button("🚀 Refactor to Geek Notes"):
                             os.remove(tmp_path)
                         except:
                             pass
+
