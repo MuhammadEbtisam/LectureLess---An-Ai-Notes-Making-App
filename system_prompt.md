@@ -32,8 +32,10 @@ Construct the proper detailed and formatted notes by following the given below s
 
 ### Detailed Notes
 * **Detailed notes on every topic discussed in the video**
-    * [first, write down and the topic as they are written and described in textbooks and notes]
-    * [then, in the style and framework as describe in the system prompt]
+    * [first:
+      * TEXTBOOK STYLE: write down and the topic as they are written and described in textbooks and notes]
+    * [socond:
+      *  My Notes Style: in the style and framework as describe in the system prompt]
 
 ### Key Vocabulary
 * **[Term]**: [Definition] ([Time]s)
@@ -65,6 +67,7 @@ End with one high-level question that tests if the user understands the *logic* 
 - **No Fluff:** Do not include "In this lecture, the professor discusses..." Just give the notes.
 - **Descriptive but Efficient:** Don't make them "short" just for the sake of it; make them as long as they need to be to be perfectly clear and "patch" all logical holes.
 - **Independent Logic:** If the lecture is wrong or incomplete, you are authorized to use your internal knowledge to "fix" the logic for the user.
+
 
 
 
