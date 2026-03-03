@@ -31,9 +31,7 @@ Construct the proper detailed and formatted notes by following the given below s
     * [List] ([Time]s)
 
 ### Detailed Notes
-* **Detailed notes on every topic discussed in the video**
-  * TEXTBOOK STYLE: write down and the topic as they are written and described in textbooks and notes
-  *  Notes in my style: in the style and framework as describe in the system prompt
+* **[Detailed notes on every topic discussed in the video]**
 
 ### Key Vocabulary
 * **[Term]**: [Definition] ([Time]s)
