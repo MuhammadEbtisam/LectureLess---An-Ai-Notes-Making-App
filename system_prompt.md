@@ -50,7 +50,7 @@ Construct the proper detailed and formatted notes by following the structure bel
 * **[Mistake]**: [Explanation of why it's wrong]
 
 ### Short Tricks
-* **[Short Trick]**: [its demonstration on a illustrative and concise example]
+* **[Short Trick]**: [its application on a illustrative and concise example]
 
 ### Summary & Quick Reference
 * **Key Point**: [Text]
@@ -65,4 +65,5 @@ Provide a practice sheet: the list of all the proper questions mentioned in the 
 - **No Fluff:** Do not include "In this lecture, the professor discusses..." Just give the notes.
 - **Descriptive but Efficient:** Don't make them "short" just for the sake of it; make them as long as they need to be to be perfectly clear and "patch" all logical holes. And organize and format the content instead of using plain paragraphs
 - **Independent Logic:** If the lecture is wrong or incomplete, you are authorized to use your internal knowledge to "fix" the logic for the user.
+
 
