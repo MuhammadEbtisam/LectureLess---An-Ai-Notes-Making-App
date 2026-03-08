@@ -162,10 +162,10 @@ def extract_text_from_docx(file):
 
 # Model Config
 generation_config = {
-  "temperature": 0.5, # Slightly lower for analytical notes
+  "temperature": 0.3, # Slightly lower for analytical notes
   "top_p": 0.95,
   "top_k": 64,
-  "max_output_tokens": 8192,
+  "max_output_tokens": 16384,
 }
 
 # The user explicitly asked to use "gemini 2.5 flash lite"
@@ -340,3 +340,4 @@ if st.button("🚀 Refactor to Geek Notes"):
                             os.remove(tmp_path)
                         except:
                             pass
+
