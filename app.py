@@ -165,11 +165,11 @@ generation_config = {
   "temperature": 0.5, # Slightly lower for analytical notes
   "top_p": 0.95,
   "top_k": 64,
-  "max_output_tokens": 8192,
+  "max_output_tokens": 16384,
 }
 
 # The user explicitly asked to use "gemini 2.5 flash lite"
-model_name = "gemini-2.5-flash-lite"
+model_name = "gemini-2.5-flash"
 # If lite is unavailable in specific regions, fallback to standard gemini-2.5-flash
 # but we will try the exact lite model first as requested.
 
@@ -340,3 +340,4 @@ if st.button("🚀 Refactor to Geek Notes"):
                             os.remove(tmp_path)
                         except:
                             pass
+
